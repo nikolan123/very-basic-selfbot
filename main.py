@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 import asyncio
 import random
+import requests
 
 load_dotenv()
 
@@ -42,6 +43,17 @@ snipe_message_author = None
 snipe_message_id = None
 
 @bot.event
+async def on_message(message):
+    global naughtypinger
+    global naughtypingerid
+    global naughtypingmsg
+    if bot.user.mentioned_in(message):
+        naughtypingerid = message.author.id
+        naughtypinger = message.author.name
+        naughtypingmsg = message.content
+    await bot.process_commands(message)
+
+@bot.event
 async def on_message_delete(message):
     global snipe_message_content
     global snipe_message_author
@@ -68,6 +80,21 @@ async def snipe(ctx):
 @bot.command()
 async def gh(ctx, repo:str):
     await ctx.send(f"```github repo```||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||||||||||https://github.com/{repo}")
+
+@bot.command()
+async def dailyos(ctx, dailyosnum:str):
+    link = "https://raw.githubusercontent.com/nikolan123/daily-os/main/" + dailyosnum + ".md"
+    print(link)
+    f = requests.get(link)           
+    await ctx.send(f.text)
+
+@bot.command()
+async def hack(ctx):
+    await ctx.send("`hacked successfully`")
+
+@bot.command()
+async def whoping(ctx):
+    await ctx.send(f"```who pinged \n\nuser: {naughtypinger} \nid: {naughtypingerid} \ncontent: '{naughtypingmsg}'```")
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 bot.run(TOKEN)
