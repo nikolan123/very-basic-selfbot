@@ -6,6 +6,7 @@ import os
 import asyncio
 import random
 import requests
+import json
 
 load_dotenv()
 
@@ -95,6 +96,29 @@ async def hack(ctx):
 @bot.command()
 async def whoping(ctx):
     await ctx.send(f"```who pinged \n\nuser: {naughtypinger} \nid: {naughtypingerid} \ncontent: '{naughtypingmsg}'```")
+
+
+@bot.command()
+async def cleardm(ctx, user: discord.User, purgenum:int):
+    #await ctx.channel.purge(limit=5)
+    count = 1
+    async for message in user.history():
+        if count<purgenum:
+            if message.author == bot.user:
+                await message.delete()
+                count=count+1
+
+@bot.command()
+async def dogfact(ctx):
+    dogfacturl = "https://dogapi.dog/api/v2/facts"
+    querystring = {"limit":"1"}
+    payload = ""
+    response = requests.request("GET", dogfacturl, data=payload, params=querystring)
+    response_json = json.loads(response.content)
+    fact = response_json['data'][0]['attributes']['body']
+    await ctx.send(f"```dog fact \n\n{fact}```")
+
+
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 bot.run(TOKEN)
