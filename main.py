@@ -90,10 +90,6 @@ async def dailyos(ctx, dailyosnum:str):
     await ctx.send(f.text)
 
 @bot.command()
-async def hack(ctx):
-    await ctx.send("`hacked successfully`")
-
-@bot.command()
 async def whoping(ctx):
     await ctx.send(f"```who pinged \n\nuser: {naughtypinger} \nid: {naughtypingerid} \ncontent: '{naughtypingmsg}'```")
 
@@ -118,7 +114,42 @@ async def dogfact(ctx):
     fact = response_json['data'][0]['attributes']['body']
     await ctx.send(f"```dog fact \n\n{fact}```")
 
+@bot.command()
+async def hack(ctx):
+    message = await ctx.send("```loading...```")
+    for x in range(3):
+        await asyncio.sleep(0.2)
+        await message.edit(content=f"```downloading trojan /```")
+        await asyncio.sleep(0.2)
+        await message.edit(content=f"```downloading trojan |```")
+        await asyncio.sleep(0.2)
+        await message.edit(content=f"```downloading trojan \\```")
+        await asyncio.sleep(0.2)
+        await message.edit(content=f"```downloading trojan |```")
+    await message.edit(content=f"```extracting \n3.5mb/s ■□□□□□□□□□ 10%```")
+    await asyncio.sleep(0.5)
+    await message.edit(content=f"```extracting \n5.7mb/s ■■■□□□□□□□ 30%```")
+    await asyncio.sleep(0.5)
+    await message.edit(content=f"```extracting \n5.6mb/s ■■■■□□□□□□ 40%```")
+    await asyncio.sleep(0.5)
+    await message.edit(content=f"```extracting \n5.7mb/s ■■■■■□□□□□ 50%```")
+    await asyncio.sleep(0.5)
+    await message.edit(content=f"```extracting \n0.2mb/s ■■■■■■□□□□ 60%```")
+    await asyncio.sleep(0.5)
+    await message.edit(content=f"```extracting \n1.3mb/s ■■■■■■■□□□ 70%```")
+    await asyncio.sleep(0.5)
+    await message.edit(content=f"```extracting \n10.7mb/s ■■■■■■■■□□ 80%```")
+    await asyncio.sleep(0.5)
+    await message.edit(content=f"```extracting \n4.5mb/s ■■■■■■■■■□ 90%```")
+    await asyncio.sleep(0.5)
+    await message.edit(content=f"```extracting \n2.9mb/s ■■■■■■■■■■ 100%```")
+    await asyncio.sleep(0,5)
+    await message.edit(content=f"```executed trojan.exe on victims pc```")
 
+
+@bot.command()
+async def whatareyou(ctx):
+    await ctx.send("`im nikolan's selfbot :)`")
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 bot.run(TOKEN)
