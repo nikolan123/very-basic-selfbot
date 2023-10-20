@@ -125,7 +125,7 @@ async def hack(ctx):
         await asyncio.sleep(0.2)
         await message.edit(content=f"```downloading trojan \\```")
         await asyncio.sleep(0.2)
-        await message.edit(content=f"```downloading trojan |```")
+        await message.edit(content=f"```downloading trojan -```")
     await message.edit(content=f"```extracting \n3.5mb/s ■□□□□□□□□□ 10%```")
     await asyncio.sleep(0.5)
     await message.edit(content=f"```extracting \n5.7mb/s ■■■□□□□□□□ 30%```")
