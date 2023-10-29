@@ -7,6 +7,10 @@ import asyncio
 import random
 import requests
 import json
+import g4f
+import io
+import sys
+import subprocess
 
 load_dotenv()
 
@@ -53,6 +57,10 @@ async def on_message(message):
         naughtypinger = message.author.name
         naughtypingmsg = message.content
     await bot.process_commands(message)
+    if message.guild.id == 1122866458238660628:
+        if message.author.id == 753816485436325976:
+            if message.author.nick != "mintywolf [furry]":
+                await message.author.edit(nick="mintywolf [furry]")
 
 @bot.event
 async def on_message_delete(message):
@@ -159,6 +167,14 @@ async def doggo(ctx):
     response_json = json.loads(response.content)
     doggo = response_json.get('message', "")
     await ctx.send(f"```doggo pic gen```||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||||||||||{doggo}")
+
+@bot.command()
+async def ai(ctx, msgfr:str):
+    result = subprocess.Popen('python gen.py ' + msgfr, stdout=subprocess.PIPE)
+    result.wait()
+    output, error = result.communicate()
+    formatted_output = str(output).replace('\\n', '\n').replace('\\r', '\r').replace('b"', '').replace("b'", '')
+    await ctx.send(f"```using model gpt-3.5-turbo```\n {formatted_output}")
 
 
 TOKEN = os.getenv("DISCORD_TOKEN")
