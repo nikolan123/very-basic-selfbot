@@ -15,6 +15,8 @@ import subprocess
 load_dotenv()
 
 bot = commands.Bot(command_prefix='h!', self_bot=True)
+mewords = ["nikolan", "niko", "767780952436244491"]
+snitchchannel = 1161221086587932712
 
 @bot.event
 async def on_ready():
@@ -32,9 +34,12 @@ async def whois(ctx, user:discord.User):
     await ctx.send(f'```user info\n\nusername: {user.name}#{user.discriminator}\nid: {user.id}```')
 
 @bot.command()
-async def avatar(ctx, user:discord.User):
-    url = user.avatar.url
-    await ctx.send(url)
+async def avatar(ctx, *, user:discord.User):
+    try:
+        url = user.avatar.url
+        await ctx.send(url)
+    except Exception as e:
+        await ctx.send(e)
 
 @bot.command()
 async def randnum(ctx,num1:int,num2:int):
@@ -56,11 +61,24 @@ async def on_message(message):
         naughtypingerid = message.author.id
         naughtypinger = message.author.name
         naughtypingmsg = message.content
+    snch = bot.get_channel(snitchchannel)
+    snss = False
+    for h in mewords:
+        if h in message.content.lower() and snss == False and message.guild:
+            try:
+                thingy = message.guild.name
+                thingy2 = message.guild.id
+            except Exception as e:
+                print(e)
+                thingy = "DMs"
+                thingy2 = "DMs"
+            await snch.send(f"{message.author.mention} ({message.author.id}) used `{h}` in their message with content \n> {message.content}\n sent in '{thingy}' ({thingy2}) <#{message.channel.id}>")
+            snss = True
     await bot.process_commands(message)
-    if message.guild.id == 1122866458238660628:
+"""     if message.guild.id == 1122866458238660628:
         if message.author.id == 753816485436325976:
             if message.author.nick != "mintywolf [furry]":
-                await message.author.edit(nick="mintywolf [furry]")
+                await message.author.edit(nick="mintywolf [furry]") """
 
 @bot.event
 async def on_message_delete(message):
@@ -99,7 +117,10 @@ async def dailyos(ctx, dailyosnum:str):
 
 @bot.command()
 async def whoping(ctx):
-    await ctx.send(f"```who pinged \n\nuser: {naughtypinger} \nid: {naughtypingerid} \ncontent: '{naughtypingmsg}'```")
+    try:
+        await ctx.send(f"```who pinged \n\nuser: {naughtypinger} \nid: {naughtypingerid} \ncontent: '{naughtypingmsg}'```")
+    except Exception as e:
+        await ctx.send(f"an error occured: {e}")
 
 
 @bot.command()
@@ -160,6 +181,12 @@ async def whatareyou(ctx):
     await ctx.send("`im nikolan's selfbot :)`")
 
 @bot.command()
+async def ds(ctx, *, sdds):
+    await ctx.message.delete()
+    thett = await ctx.send(sdds)
+    await thett.delete()
+
+@bot.command()
 async def doggo(ctx):
     dogpicurl = "https://dog.ceo/api/breeds/image/random"
     payload = ""
@@ -169,7 +196,7 @@ async def doggo(ctx):
     await ctx.send(f"```doggo pic gen```||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||||||||||{doggo}")
 
 @bot.command()
-async def ai(ctx, msgfr:str):
+async def ai(ctx, *, msgfr:str):
     result = subprocess.Popen('python gen.py ' + msgfr, stdout=subprocess.PIPE)
     result.wait()
     output, error = result.communicate()
