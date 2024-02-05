@@ -1,5 +1,5 @@
 # my selfboty
-It's kinda shitty and basic, basic features:
+It's kinda shitty and basic, features:
 - doggo, dogfact and ai commands
 - dm purging
 - tells you when someone said your name in another server
