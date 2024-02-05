@@ -34,10 +34,10 @@ async def whois(ctx, user:discord.User):
     await ctx.send(f'```user info\n\nusername: {user.name}#{user.discriminator}\nid: {user.id}```')
 
 @bot.command()
-async def avatar(ctx, *, user:discord.User):
+async def avatar(ctx, *, member:discord.User):
     try:
-        url = user.avatar.url
-        await ctx.send(url)
+        avatarURL = f"https://cdn.discordapp.com/avatars/{member.id}/{member.avatar}.png"
+        await ctx.send(avatarURL)
     except Exception as e:
         await ctx.send(e)
 
