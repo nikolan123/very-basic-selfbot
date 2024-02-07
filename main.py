@@ -131,7 +131,7 @@ async def cleardm(ctx, user: discord.User, purgenum:int):
     #await ctx.send(xpgembed.webEmbed(title="Message Purger", description=f"Purging {purgenum} messages..."))
     #await asyncio.sleep(3)
     #the = await ctx.send(xpgembed.webEmbed(description="Please wait while the Automated Computer script is performing non-verbal communication with the remote servers...", color="#B8DAF4"))
-    count = 1
+    count = 3
     async for message in user.history():
         if count<purgenum:
             if message.author == bot.user:
