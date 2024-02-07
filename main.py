@@ -7,15 +7,14 @@ import asyncio
 import random
 import requests
 import json
-import g4f
-import io
-import sys
+import base64
+import xpgembed
 import subprocess
 
 load_dotenv()
 
 bot = commands.Bot(command_prefix='h!', self_bot=True)
-mewords = ["nikolan", "niko", "767780952436244491"]
+mewords = ["nikolan", "767780952436244491"]
 snitchchannel = 1161221086587932712
 
 @bot.event
@@ -31,26 +30,63 @@ async def ping(ctx):
 
 @bot.command()
 async def whois(ctx, user:discord.User):
-    await ctx.send(f'```user info\n\nusername: {user.name}#{user.discriminator}\nid: {user.id}```')
+    avatarURL = f"https://cdn.discordapp.com/avatars/{user.id}/{user.avatar}.png"
+    await ctx.send(xpgembed.webEmbed(title="User Info", description=f"Username: {user.name}#{user.discriminator}\nID: {user.id}", thumbnail=avatarURL, color="#B8DAF4"))
+    #await ctx.send(f'```user info\n\nusername: {user.name}#{user.discriminator}\nid: {user.id}```')
 
 @bot.command()
 async def avatar(ctx, *, member:discord.User):
     try:
         avatarURL = f"https://cdn.discordapp.com/avatars/{member.id}/{member.avatar}.png"
-        await ctx.send(avatarURL)
+        await ctx.send(xpgembed.webEmbed(title="Avatar", description=f"{member.name}'s avatar", thumbnail=avatarURL, bigimg=True, color="#B8DAF4"))
     except Exception as e:
         await ctx.send(e)
 
 @bot.command()
 async def randnum(ctx,num1:int,num2:int):
-    await ctx.send(f"```random number\n\nyour number is: {random.randint(num1,num2)}```")
+    await ctx.send(xpgembed.webEmbed(title="Random Number Generator", description=f"Your number is: {random.randint(num1,num2)}", color="#B8DAF4"))
+    #await ctx.send(f"```random number\n\nyour number is: {random.randint(num1,num2)}```")
 
-snipe_message_content = None
-snipe_message_author = None
+#all of the sniping shit below
+snipe_message_content = {}
+snipe_message_author = {}
 
-snipe_message_content = None
-snipe_message_author = None
-snipe_message_id = None
+snipe_message_content = {}
+snipe_message_author = {}
+snipe_message_id = {}
+
+@bot.event
+async def on_message_delete(message):
+    snipe_message_content[message.channel.id] = message.content
+    snipe_message_author[message.channel.id] = message.author.id
+    snipe_message_id[message.channel.id] = message.id
+    snipe_channel = message.channel.id
+@bot.command(name="snipe",description="Shows the last deleted message")
+async def snipe(ctx):
+    if snipe_message_content == None:
+        await ctx.send(xpgembed.webEmbed(title="Snipe", description="Nothing to snipe", color="#B8DAF4"))
+    else:
+        # await ctx.send(f"```snipe \n\nuser with id {snipe_message_author} sent '{snipe_message_content}' with msg id {snipe_message_id}```<@{snipe_message_author}>")
+        embed = discord.Embed(title="Snipe", color=0xB8DAF4)
+        try:
+            await ctx.send(xpgembed.webEmbed(title="Snipe", description=f"Author: {snipe_message_author[ctx.channel.id]}\nContent: {snipe_message_content[ctx.channel.id]}", color="#B8DAF4"))
+
+            embed.add_field(
+                name="Author",
+                value=f"<@{snipe_message_author[ctx.channel.id]}>",
+                inline=False,
+            )
+            embed.add_field(
+                name="Message",
+                value=f"{snipe_message_content[ctx.channel.id]}",
+                inline=False,
+            )
+           
+        except Exception as e:
+            await ctx.send(xpgembed.webEmbed(title="Snipe", description="Nothing to snipe", color="#B8DAF4"))
+        return
+
+#end of sniping shit
 
 @bot.event
 async def on_message(message):
@@ -75,50 +111,16 @@ async def on_message(message):
             await snch.send(f"{message.author.mention} ({message.author.id}) used `{h}` in their message with content \n> {message.content}\n sent in '{thingy}' ({thingy2}) <#{message.channel.id}>")
             snss = True
     await bot.process_commands(message)
-"""     if message.guild.id == 1122866458238660628:
-        if message.author.id == 753816485436325976:
-            if message.author.nick != "mintywolf [furry]":
-                await message.author.edit(nick="mintywolf [furry]") """
-
-@bot.event
-async def on_message_delete(message):
-    global snipe_message_content
-    global snipe_message_author
-    global snipe_message_id
-
-    snipe_message_content = message.content
-    snipe_message_author = message.author.id
-    snipe_message_id = message.id
-    await asyncio.sleep(60)
-
-    if message.id == snipe_message_id:
-        snipe_message_author = None
-        snipe_message_content = None
-        snipe_message_id = None
-
-@bot.command()
-async def snipe(ctx):
-    if snipe_message_content==None:
-        await ctx.send(f"```snipe \n\ntheres nothing to snipe```")
-    else:
-        await ctx.send(f"```snipe \n\nuser with id {snipe_message_author} sent '{snipe_message_content}' with msg id {snipe_message_id}```<@{snipe_message_author}>")
-        return
 
 @bot.command()
 async def gh(ctx, repo:str):
     await ctx.send(f"```github repo```||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||||||||||https://github.com/{repo}")
 
 @bot.command()
-async def dailyos(ctx, dailyosnum:str):
-    link = "https://raw.githubusercontent.com/nikolan123/daily-os/main/" + dailyosnum + ".md"
-    print(link)
-    f = requests.get(link)           
-    await ctx.send(f.text)
-
-@bot.command()
 async def whoping(ctx):
     try:
-        await ctx.send(f"```who pinged \n\nuser: {naughtypinger} \nid: {naughtypingerid} \ncontent: '{naughtypingmsg}'```")
+        #await ctx.send(f"```who pinged \n\nuser: {naughtypinger} \nid: {naughtypingerid} \ncontent: '{naughtypingmsg}'```")
+        await ctx.send(xpgembed.webEmbed(title="Who pinged", description=f"User: {naughtypinger}\nID: {naughtypingerid}\nContent: {naughtypingmsg}", color="#B8DAF4"))
     except Exception as e:
         await ctx.send(f"an error occured: {e}")
 
@@ -126,22 +128,28 @@ async def whoping(ctx):
 @bot.command()
 async def cleardm(ctx, user: discord.User, purgenum:int):
     #await ctx.channel.purge(limit=5)
+    #await ctx.send(xpgembed.webEmbed(title="Message Purger", description=f"Purging {purgenum} messages..."))
+    #await asyncio.sleep(3)
+    the = await ctx.send(xpgembed.webEmbed(description="Please wait while the Automated Computer script is performing non-verbal communication with the remote servers...", color="#B8DAF4"))
     count = 1
     async for message in user.history():
         if count<purgenum:
             if message.author == bot.user:
                 await message.delete()
                 count=count+1
+    await the.edit(content=xpgembed.webEmbed(title="DM Purge Completed", description=f"Purged {purgenum} in DMs with {user.name}", color="#B8DAF4"))
 
 @bot.command()
 async def dogfact(ctx):
+    the = await ctx.send(xpgembed.webEmbed(description="Please wait while the Automated Computer script is performing non-verbal communication with the remote servers...", color="#B8DAF4"))
     dogfacturl = "https://dogapi.dog/api/v2/facts"
     querystring = {"limit":"1"}
     payload = ""
     response = requests.request("GET", dogfacturl, data=payload, params=querystring)
     response_json = json.loads(response.content)
     fact = response_json['data'][0]['attributes']['body']
-    await ctx.send(f"```dog fact \n\n{fact}```")
+    #await ctx.send(f"```dog fact \n\n{fact}```")
+    await the.edit(content=xpgembed.webEmbed(title="Dog Fact", description=fact, color="#B8DAF4"))
 
 @bot.command()
 async def hack(ctx):
@@ -178,7 +186,7 @@ async def hack(ctx):
 
 @bot.command()
 async def whatareyou(ctx):
-    await ctx.send("`im nikolan's selfbot :)`")
+    await ctx.send(xpgembed.webEmbed(title="im nikolans selfbot :)", color="#B8DAF4"))
 
 @bot.command()
 async def ds(ctx, *, sdds):
@@ -188,21 +196,50 @@ async def ds(ctx, *, sdds):
 
 @bot.command()
 async def doggo(ctx):
+    the = await ctx.send(xpgembed.webEmbed(description="Please wait while the Automated Computer script is performing non-verbal communication with the remote servers...", color="#B8DAF4"))
     dogpicurl = "https://dog.ceo/api/breeds/image/random"
     payload = ""
     response = requests.request("GET", dogpicurl, data=payload)
     response_json = json.loads(response.content)
     doggo = response_json.get('message', "")
-    await ctx.send(f"```doggo pic gen```||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||||||||||{doggo}")
+    await the.edit(content=xpgembed.webEmbed(title="Doggo", thumbnail=doggo, bigimg=True, color="#B8DAF4"))
+    #await ctx.send(f"```doggo pic gen```||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||||||||||{doggo}")
 
 @bot.command()
 async def ai(ctx, *, msgfr:str):
+    the = await ctx.send(xpgembed.webEmbed(title="AI", description="Generating, please wait...", color="#B8DAF4"))
     result = subprocess.Popen('python gen.py ' + msgfr, stdout=subprocess.PIPE)
     result.wait()
     output, error = result.communicate()
-    formatted_output = str(output).replace('\\n', '\n').replace('\\r', '\r').replace('b"', '').replace("b'", '')
-    await ctx.send(f"```using model gpt-3.5-turbo```\n {formatted_output}")
+    formatted_output = str(output).replace('\\n', '\n').replace('\\r', '\r').replace('b"', '').replace("b'", '').replace("@", "_").replace("##", "#").replace("\n'", "")
+    await the.edit(content=f"> Generated using model GPT-3.5-Turbo\n{formatted_output}")
 
+
+def check_website_status(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an HTTPError for bad responses (4xx and 5xx status codes)
+        return f"The website <{url}> is up. Status code: {response.status_code}"
+        #return f"UP {response.status_code}"
+    except requests.exceptions.RequestException as e:
+        return f"The website <{url}> is down. Error: {e}"
+        #return "Down"
+@bot.command(name="wping")
+async def pingweb(ctx, web):
+    the = await ctx.send(xpgembed.webEmbed(description="Please wait while the Automated Computer script is performing non-verbal communication with the remote servers...", color="#B8DAF4"))
+    if "http://" in web or "https://" in web:
+        pass
+    else:
+        web = "http://" + web
+    result = check_website_status(web)
+    await the.edit(content=xpgembed.webEmbed(description=result, color="#B8DAF4"))
+
+@bot.command()
+async def tokenstart(ctx, user: discord.User):
+    b64_encoded = base64.b64encode(str(user.id).encode('utf-8')).decode('utf-8')
+    b64_thingy = b64_encoded.replace('=', '')
+    final = b64_thingy + '.'
+    await ctx.send(xpgembed.webEmbed(title="Token", description=f"{user.name}'s token starts with:\n{final}", color="#B8DAF4"))
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 bot.run(TOKEN)
