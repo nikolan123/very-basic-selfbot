@@ -130,14 +130,16 @@ async def cleardm(ctx, user: discord.User, purgenum:int):
     #await ctx.channel.purge(limit=5)
     #await ctx.send(xpgembed.webEmbed(title="Message Purger", description=f"Purging {purgenum} messages..."))
     #await asyncio.sleep(3)
-    the = await ctx.send(xpgembed.webEmbed(description="Please wait while the Automated Computer script is performing non-verbal communication with the remote servers...", color="#B8DAF4"))
+    #the = await ctx.send(xpgembed.webEmbed(description="Please wait while the Automated Computer script is performing non-verbal communication with the remote servers...", color="#B8DAF4"))
     count = 1
     async for message in user.history():
         if count<purgenum:
             if message.author == bot.user:
                 await message.delete()
                 count=count+1
-    await the.edit(content=xpgembed.webEmbed(title="DM Purge Completed", description=f"Purged {purgenum} in DMs with {user.name}", color="#B8DAF4"))
+    the = await ctx.send(content=xpgembed.webEmbed(title="DM Purge Completed", description=f"Purged {purgenum} in DMs with {user.name}", color="#B8DAF4"))
+    await asyncio.sleep(5)
+    await the.delete()
 
 @bot.command()
 async def dogfact(ctx):
